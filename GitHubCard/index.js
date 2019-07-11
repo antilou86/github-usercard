@@ -7,6 +7,19 @@
 
 const info = axios.get('https://api.github.com/users/antilou86')
 
+info.then( 
+  (response) => {
+  console.log('info.data: ' + response.data)
+  let cards = document.querySelector('.cards')
+  let element = makerBot(response);
+  cards.appendChild(element);
+})
+  .catch( 
+  (error) => {
+  console.log('the error is: ' + error);
+})
+
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -17,12 +30,6 @@ const info = axios.get('https://api.github.com/users/antilou86')
 /* Step 4: Pass the data received from Github into your function, 
            create a new component and add it to the DOM as a child of .cards
 */
-info.then( (response) => {
-    console.log(response)
-    cards.appendChild(makerBot(info));
-}).catch( (error) => {
-    console.log('the error is: ' + error);
-})
 
 
 /* Step 5: Now that you have your own card getting added to the DOM, either 
