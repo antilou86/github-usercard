@@ -4,7 +4,6 @@
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
-
 const info = axios.get('https://api.github.com/users/antilou86')
 
 info.then( 
@@ -48,7 +47,20 @@ const followersArray = ['tetondan',
   'luishrd',
   'bigknell' ];
 
-
+followersArray.forEach(follower => {
+let followerURL = 'https://api.github.com/users/' + follower;
+axios.get(followerURL).then( 
+  (response) => {
+    console.log('SUCCESS!!')
+  let cards = document.querySelector('.cards')
+  let element = makerBot(response);
+  cards.appendChild(element);
+})
+  .catch( 
+  (error) => {
+  console.log('the error is: ' + error);
+})
+})
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -109,7 +121,7 @@ let makerBot = (object) => {
   cardInfoDiv.appendChild(followersP)
   
   let followingP = document.createElement('p')
-  followingP.textContent = 'Followers: ' + object.data.following;
+  followingP.textContent = 'Following: ' + object.data.following;
   cardInfoDiv.appendChild(followingP)
 
   let bioP = document.createElement('p')
