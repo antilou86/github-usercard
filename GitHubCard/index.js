@@ -40,6 +40,7 @@ info.then(
           Using that array, iterate over it, requesting data for each user, creating a new card for each
           user, and adding that card to the DOM.
 */
+
 //stretch- get followers programatically
 
 let newFollowersArray = axios.get('https://api.github.com/users/antilou86/followers').then(response => {
@@ -65,15 +66,16 @@ let newFollowersArray = axios.get('https://api.github.com/users/antilou86/follow
   let objectArray = [];
   urlArray.forEach(url => {
     let axiosThing = axios.get(url)
-    console.log(axiosThing)
+    //console.log(axiosThing)
     objectArray.push(axiosThing);
     return objectArray;
   })
-  console.log(objectArray)
+  //console.log(objectArray)
   return objectArray;
 }).then(objects => {
   objects.forEach(object => {
-  let element = makerBot2(object);
+  let data = object.data;
+  let element = makerBot2(data);
   let cards = document.querySelector('.cards')
   cards.appendChild(element);
 })
@@ -90,7 +92,7 @@ let newFollowersArray = axios.get('https://api.github.com/users/antilou86/follow
 
 
 
-// newFollowersArray.forEach(follower => {
+// followersArray.forEach(follower => {
 // let followerURL = 'https://api.github.com/users/' + follower;
 // axios.get(followerURL).then( 
 //   (response) => {
@@ -219,7 +221,7 @@ let makerBot2 = (object) => {
   let bioP = document.createElement('p')
   bioP.textContent = 'Bio: ' + object.bio
 
-  return cardDiv;
+  return document.querySelector('.cards').appendChild(cardDiv);
 };
 /* List of LS Instructors Github username's: 
   tetondan
