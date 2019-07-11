@@ -6,17 +6,17 @@
 */
 const info = axios.get('https://api.github.com/users/antilou86')
 
-info.then( 
+info.then(
   (response) => {
-  console.log('info.data: ' + response.data)
-  let cards = document.querySelector('.cards')
-  let element = makerBot(response);
-  cards.appendChild(element);
-})
-  .catch( 
-  (error) => {
-  console.log('the error is: ' + error);
-})
+    console.log('info.data: ' + response.data)
+    let cards = document.querySelector('.cards')
+    let element = makerBot(response);
+    cards.appendChild(element);
+  })
+  .catch(
+    (error) => {
+      console.log('the error is: ' + error);
+    })
 
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
@@ -40,27 +40,70 @@ info.then(
           Using that array, iterate over it, requesting data for each user, creating a new card for each
           user, and adding that card to the DOM.
 */
+//stretch- get followers programatically
 
-const followersArray = ['tetondan',
-  'dustinmyers',
-  'justsml',
-  'luishrd',
-  'bigknell' ];
-
-followersArray.forEach(follower => {
-let followerURL = 'https://api.github.com/users/' + follower;
-axios.get(followerURL).then( 
-  (response) => {
-    console.log('SUCCESS!!')
+let newFollowersArray = axios.get('https://api.github.com/users/antilou86/followers').then(response => {
+  resultingArray = [];
+  //console.log(response)
+  response.data.forEach(item => {
+    resultingArray.push(item.login);
+    return resultingArray;
+  })
+  //console.log(resultingArray);
+  return resultingArray;
+  
+}).then(array => {
+  let followerUrlArray = [];
+  array.forEach(follower => {
+    followerUrlArray.push('https://api.github.com/users/' + follower);
+    //console.log(followerUrlArray)
+    return followerUrlArray;
+  })
+  console.log(followerUrlArray)
+  return followerUrlArray;
+}).then(urlArray => {
+  let objectArray = [];
+  urlArray.forEach(url => {
+    let axiosThing = axios.get(url)
+    console.log(axiosThing)
+    objectArray.push(axiosThing);
+    return objectArray;
+  })
+  console.log(objectArray)
+  return objectArray;
+}).then(objects => {
+  objects.forEach(object => {
+  let element = makerBot2(object);
   let cards = document.querySelector('.cards')
-  let element = makerBot(response);
   cards.appendChild(element);
 })
-  .catch( 
-  (error) => {
-  console.log('the error is: ' + error);
-})
-})
+}).catch (error => {
+  console.log('error: ' + error);
+});
+
+
+// const followersArray = ['tetondan',
+//   'dustinmyers',
+//   'justsml',
+//   'luishrd',
+//   'bigknell' ];
+
+
+
+// newFollowersArray.forEach(follower => {
+// let followerURL = 'https://api.github.com/users/' + follower;
+// axios.get(followerURL).then( 
+//   (response) => {
+//     console.log('SUCCESS!!')
+//   let cards = document.querySelector('.cards')
+//   let element = makerBot(response);
+//   cards.appendChild(element);
+// })
+//   .catch( 
+//   (error) => {
+//   console.log('the error is: ' + error);
+// })
+// })
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -110,16 +153,16 @@ let makerBot = (object) => {
 
   let profileP = document.createElement('p')
   profileP.textContent = 'Profile: '
-    let anchorTag = document.createElement('a')
-    anchorTag.href = object.data.url;
-    anchorTag.textContent = object.data.url;
-    profileP.appendChild(anchorTag)
+  let anchorTag = document.createElement('a')
+  anchorTag.href = object.data.url;
+  anchorTag.textContent = object.data.html_url;
+  profileP.appendChild(anchorTag)
   cardInfoDiv.appendChild(profileP)
 
   let followersP = document.createElement('p')
   followersP.textContent = 'Followers: ' + object.data.followers;
   cardInfoDiv.appendChild(followersP)
-  
+
   let followingP = document.createElement('p')
   followingP.textContent = 'Following: ' + object.data.following;
   cardInfoDiv.appendChild(followingP)
@@ -130,6 +173,54 @@ let makerBot = (object) => {
   return cardDiv;
 };
 
+
+let makerBot2 = (object) => {
+  let cardDiv = document.createElement('div')
+  cardDiv.classList.add('card')
+
+  let imageDiv = document.createElement('img')
+  imageDiv.src = object.avatar_url;  //if buggy check this path
+  cardDiv.appendChild(imageDiv)
+
+  let cardInfoDiv = document.createElement('div')
+  cardInfoDiv.classList.add('card-info')
+  cardDiv.appendChild(cardInfoDiv)
+
+  let h3 = document.createElement('h3')
+  h3.classList.add('name')
+  h3.textContent = object.name;
+  cardInfoDiv.appendChild(h3)
+
+  let userNameP = document.createElement('p')
+  userNameP.classList.add('username')
+  userNameP.textContent = object.login;
+  cardInfoDiv.appendChild(userNameP)
+
+  let locationP = document.createElement('p')
+  locationP.textContent = 'Location: ' + object.location;
+  cardInfoDiv.appendChild(locationP)
+
+  let profileP = document.createElement('p')
+  profileP.textContent = 'Profile: '
+  let anchorTag = document.createElement('a')
+  anchorTag.href = object.url;
+  anchorTag.textContent = object.html_url;
+  profileP.appendChild(anchorTag)
+  cardInfoDiv.appendChild(profileP)
+
+  let followersP = document.createElement('p')
+  followersP.textContent = 'Followers: ' + object.followers;
+  cardInfoDiv.appendChild(followersP)
+
+  let followingP = document.createElement('p')
+  followingP.textContent = 'Following: ' + object.following;
+  cardInfoDiv.appendChild(followingP)
+
+  let bioP = document.createElement('p')
+  bioP.textContent = 'Bio: ' + object.bio
+
+  return cardDiv;
+};
 /* List of LS Instructors Github username's: 
   tetondan
   dustinmyers
